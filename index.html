@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner de Code-Barres</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .scanner-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        #scanner-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 3px dashed #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+        #scanner-container.active {
+            border: 3px solid #28a745;
+        }
+
+        #scanner-container video {
+            position: absolute;
+	    top: 0;
+	    left:0;
+	    width: 100%;
+            height: 100%;
+	    objectif-fit: cover;
+	    z-index: 1;
+        }
+
+        .scanner-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 100px;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .scanner-overlay::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            animation: scan-pulse 2s infinite;
+        }
+
+        @keyframes scan-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .placeholder {
+            text-align: center;
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .placeholder i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .results {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .results h3 {
+            margin-bottom: 15px;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+
+        .result-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #28a745;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateX(-20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+
+        .result-code {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #495057;
+            font-size: 1.1rem;
+        }
+
+        .result-type {
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
+
+        .status {
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .scanner-container {
+                padding: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            #scanner-container {
+                height: 250px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📱 Scanner de Code-Barres</h1>
+        <p>Scannez vos codes-barres en temps réel</p>
+    </div>
+
+    <div class="scanner-container">
+        <div class="controls">
+            <button id="start-btn" class="btn">🎥 Démarrer le Scanner</button>
+            <button id="stop-btn" class="btn" disabled>⏹️ Arrêter</button>
+            <button id="clear-btn" class="btn">🗑️ Effacer les Résultats</button>
+        </div>
+
+        <div id="scanner-container">
+            <div class="placeholder">
+                <i>📷</i>
+                <div>Cliquez sur "Démarrer le Scanner" pour commencer</div>
+            </div>
+            <div class="scanner-overlay hidden"></div>
+        </div>
+
+        <div id="status" class="status info">
+            Prêt à scanner
+        </div>
+
+        <div class="results">
+            <h3>📊 Résultats du Scan</h3>
+            <div id="results-list">
+                <div style="text-align: center; color: #6c757d; font-style: italic;">
+                    Aucun code scanné pour le moment
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <script>
+        class BarcodeScanner {
+            constructor() {
+                this.isScanning = false;
+                this.scannedCodes = new Set();
+                this.initializeElements();
+                this.bindEvents();
+            }
+
+            initializeElements() {
+                this.startBtn = document.getElementById('start-btn');
+                this.stopBtn = document.getElementById('stop-btn');
+                this.clearBtn = document.getElementById('clear-btn');
+                this.scannerContainer = document.getElementById('scanner-container');
+                this.status = document.getElementById('status');
+                this.resultsList = document.getElementById('results-list');
+                this.overlay = document.querySelector('.scanner-overlay');
+            }
+
+            bindEvents() {
+                this.startBtn.addEventListener('click', () => this.startScanner());
+                this.stopBtn.addEventListener('click', () => this.stopScanner());
+                this.clearBtn.addEventListener('click', () => this.clearResults());
+            }
+
+            updateStatus(message, type = 'info') {
+                this.status.className = `status ${type}`;
+                this.status.textContent = message;
+            }
+
+            startScanner() {
+                if (this.isScanning) return;
+
+                this.updateStatus('Initialisation de la caméra...', 'info');
+                
+                Quagga.init({
+                    inputStream: {
+                        name: "Live",
+                        type: "LiveStream",
+                        target: this.scannerContainer,
+                        constraints: {
+                            width: 640,
+                            height: 480,
+                            facingMode: "environment"
+                        }
+                    },
+                    locator: {
+                        patchSize: "medium",
+                        halfSample: true
+                    },
+                    numOfWorkers: 2,
+                    frequency: 10,
+                    decoder: {
+                        readers: [
+                            "code_128_reader",
+                            "ean_reader",
+                            "ean_8_reader",
+                            "code_39_reader",
+                            "code_39_vin_reader",
+                            "codabar_reader",
+                            "upc_reader",
+                            "upc_e_reader",
+                            "i2of5_reader"
+                        ]
+                    },
+                    locate: true
+                }, (err) => {
+                    if (err) {
+                        console.error('Erreur QuaggaJS:', err);
+                        this.updateStatus('Erreur: Impossible d\'accéder à la caméra', 'error');
+                        return;
+                    }
+
+                    this.isScanning = true;
+                    this.scannerContainer.classList.add('active');
+                    this.overlay.classList.remove('hidden');
+                    this.startBtn.disabled = true;
+                    this.stopBtn.disabled = false;
+                    this.updateStatus('Scanner actif - Positionnez un code-barres dans le cadre', 'success');
+                    
+                    Quagga.start();
+                });
+
+                Quagga.onDetected((result) => {
+                    const code = result.codeResult.code;
+                    const format = result.codeResult.format;
+                    
+                    if (!this.scannedCodes.has(code)) {
+                        this.scannedCodes.add(code);
+                        this.addResult(code, format);
+                        this.playBeep();
+                        this.updateStatus(`Code détecté: ${code}`, 'success');
+                    }
+                });
+            }
+
+            stopScanner() {
+                if (!this.isScanning) return;
+
+                Quagga.stop();
+                this.isScanning = false;
+                this.scannerContainer.classList.remove('active');
+                this.overlay.classList.add('hidden');
+                this.startBtn.disabled = false;
+                this.stopBtn.disabled = true;
+                
+                // Nettoyer le container
+                this.scannerContainer.innerHTML = `
+                    <div class="placeholder">
+                        <i>📷</i>
+                        <div>Cliquez sur "Démarrer le Scanner" pour commencer</div>
+                    </div>
+                    <div class="scanner-overlay hidden"></div>
+                `;
+                
+                this.overlay = document.querySelector('.scanner-overlay');
+                this.updateStatus('Scanner arrêté', 'info');
+            }
+
+            addResult(code, format) {
+                if (this.resultsList.querySelector('.placeholder-text')) {
+                    this.resultsList.innerHTML = '';
+                }
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.innerHTML = `
+                    <span class="result-code">${code}</span>
+                    <span class="result-type">${format}</span>
+                `;
+                
+                this.resultsList.insertBefore(resultItem, this.resultsList.firstChild);
+            }
+
+            clearResults() {
+                this.scannedCodes.clear();
+                this.resultsList.innerHTML = `
+                    <div style="text-align: center; color: #6c757d; font-style: italic;">
+                        Aucun code scanné pour le moment
+                    </div>
+                `;
+                this.updateStatus('Résultats effacés', 'info');
+            }
+
+            playBeep() {
+                // Créer un bip sonore simple
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'square';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            }
+        }
+
+        // Initialiser le scanner au chargement de la page
+        document.addEventListener('DOMContentLoaded', () => {
+            new BarcodeScanner();
+        });
+
+        // Gérer la fermeture de la page
+        window.addEventListener('beforeunload', () => {
+            if (typeof Quagga !== 'undefined') {
+                Quagga.stop();
+            }
+        });
+    </script>
+</body>
+</html>
