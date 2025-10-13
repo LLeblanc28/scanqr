@@ -1,109 +1,108 @@
-// Déclartion des éléments DOM
+// Stockage des résultats
+let results = [];
 
-const video = document.getElementById('video');
-const startBtn = document.getElementById('start-btn');
-const stopBtn = document.getElementById('stop-btn');
-const clearBtn = document.getElementById('clear-btn');
-const statusDiv = document.getElementById('status');
+// Références aux éléments
+const form = document.getElementById('scan-form');
+const codeInput = document.getElementById('code-input');
+const quantiteInput = document.getElementById('quantite');
 const resultsList = document.getElementById('results-list');
+const exportBtn = document.getElementById('export-btn');
 
-let stream = null;
-let scanning = false;
-let scanned = new Set();
-let detector = null;
+// Gestion de la soumission du formulaire
+form.addEventListener('submit', function(e) {
+  e.preventDefault(); // Empêche le rechargement de la page
+  
+  const code = codeInput.value.trim();
+  const quantite = parseInt(quantiteInput.value) || 1;
+  
+  if (code) {
+    // Ajouter le résultat
+    addResult(code, quantite);
+    
+    // Vider l'input du code-barres
+    codeInput.value = '';
+    
+    // Remettre le focus sur l'input
+    codeInput.focus();
+    
+    // Réinitialiser la quantité à 1
+    quantiteInput.value = 1;
+  }
+});
 
-// Buffer pour lecture stable
-let detectionBuffer = {};
-const REQUIRED_DETECTIONS = 3; // nombre de détections consécutives pour valider
-
-function updateStatus(msg,type='info'){
-  statusDiv.className = `status ${type}`;
-  statusDiv.textContent = msg;
+// Fonction pour ajouter un résultat
+function addResult(code, quantite) {
+  const timestamp = new Date().toLocaleString('fr-FR');
+  
+  // Vérifier si le code existe déjà
+  const existingIndex = results.findIndex(r => r.code === code);
+  
+  if (existingIndex >= 0) {
+    // Ajouter à la quantité existante
+    results[existingIndex].quantite += quantite;
+  } else {
+    // Ajouter un nouveau résultat
+    results.push({
+      code: code,
+      quantite: quantite,
+      timestamp: timestamp
+    });
+  }
+  
+  displayResults();
 }
 
-// addResult ajoute un code scanné à la liste des résultats
-
-function addResult(code,format){
-  const div=document.createElement('div');
-  div.className='result-item';
-  div.innerHTML=`<span class="result-code">${code}</span><span class="result-type">${format}</span>`;
-  resultsList.prepend(div);
-}
-
-//Lance le scanner
-
-async function startScanner(){
-  if(!('BarcodeDetector' in window)){
-    updateStatus("❌ Votre navigateur ne supporte pas BarcodeDetector", 'error');
+// Fonction pour afficher les résultats
+function displayResults() {
+  if (results.length === 0) {
+    resultsList.innerHTML = '<div style="text-align:center; color:#6c757d; font-style:italic;">Aucun code scanné pour le moment</div>';
     return;
   }
-  try{
-    detector = new BarcodeDetector({formats:['ean_13','upc_a']});
-    stream = await navigator.mediaDevices.getUserMedia({
-    video:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080}}
-    });
+  
+  resultsList.innerHTML = '';
+  
+  results.forEach((result, index) => {
+    const div = document.createElement('div');
+    div.className = 'result-item';
+    div.innerHTML = `
+      <div>
+        <div class="result-code">${result.code}</div>
+        <div style="font-size:0.9em; color:#6c757d;">${result.timestamp}</div>
+      </div>
+      <div class="result-quantity">Qté: ${result.quantite}</div>
+    `;
+    resultsList.appendChild(div);
+  });
+}
 
-    video.srcObject = stream;
-    scanning=true;
-    startBtn.disabled=true;
-    stopBtn.disabled=false;
-    updateStatus("Scanner actif - Placez le code dans le cadre",'success');
-    scanLoop();
+// Fonction d'exportation
+exportBtn.addEventListener('click', function() {
+  if (results.length === 0) {
+    alert('Aucun résultat à exporter');
+    return;
   }
-  catch (err) {
-    console.error(err);
-    updateStatus("Erreur d'accès à la caméra",'error');
+  
+  // Créer le contenu CSV
+  let csv = 'Code-Barres,Quantité,Date/Heure\n';
+  results.forEach(result => {
+    csv += `${result.code},${result.quantite},${result.timestamp}\n`;
+  });
+  
+  // Créer et télécharger le fichier
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  link.setAttribute('href', url);
+  link.setAttribute('download', `scan_${new Date().getTime()}.csv`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+});
+
+// Garder le focus sur l'input du code-barres
+document.addEventListener('click', function (e) {
+  if (e.target.id !== 'quantite' && e.target.id !== 'submit' && e.target.id !== 'export-btn') {
+    codeInput.focus();
   }
-}
-
-// Arrête le scanner
-
-function stopScanner(){
-  if(stream) stream.getTracks().forEach(t=>t.stop());
-  scanning=false;
-  startBtn.disabled=false;
-  stopBtn.disabled=true;
-  updateStatus("Scanner arrêté",'info');
-}
-
-
-// Permet d'effacer les résultats
-
-function clearResults(){
-  scanned.clear();
-  detectionBuffer={};
-  resultsList.innerHTML=`<div style="text-align:center; color:#6c757d; font-style:italic;">Aucun code scanné pour le moment</div>`;
-  updateStatus("Résultats effacés",'info');
-}
-
-async function scanLoop(){
-  if(!scanning) return;
-
-  try{
-    const barcodes=await detector.detect(video);
-    for(const barcode of barcodes){
-      const code=barcode.rawValue;
-      const format=barcode.format;
-
-      // Lecture stable : on incrémente le compteur dans detectionBuffer
-      detectionBuffer[code] = (detectionBuffer[code]||0)+1;
-
-      if(detectionBuffer[code]>=REQUIRED_DETECTIONS && !scanned.has(code)){
-        scanned.add(code);
-        addResult(code,format);
-        playBeep();
-        updateStatus(`Code confirmé : ${code}`,'success');
-        // Réinitialiser le compteur pour éviter plusieurs ajouts
-        detectionBuffer[code]=0;
-      }
-    }
-  }catch(e){ console.warn(e); }
-
-  requestAnimationFrame(scanLoop);
-}
-
-startBtn.onclick=startScanner;
-stopBtn.onclick=stopScanner;
-clearBtn.onclick=clearResults;
-window.addEventListener('beforeunload',stopScanner);
-
+});

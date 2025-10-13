@@ -4,28 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="styles.css">
-<title>Scanner de Code-Barres (Lecture stable)</title>
+<title>Lecteur de Code-Barres</title>
 
 </head>
 <body>
 <div class="header">
   <h1>📱 Scanner de Code-Barres</h1>
-  <p>Lecture stable - nécessite 3 détections consécutives</p>
+  <p>Nécéssite une douchette USB ou bluetooth</p>
 </div>
 
-<div class="scanner-container">
-  <div class="controls">
-    <button id="start-btn" class="btn">🎥 Démarrer</button>
-    <button id="stop-btn" class="btn" disabled>⏹️ Arrêter</button>
-    <button id="clear-btn" class="btn">🗑️ Effacer</button>
-  </div>
-
-  <div id="scanner">
-    <video id="video" autoplay playsinline></video>
-    <div class="overlay"></div>
-  </div>
-
-  <div id="status" class="status info">Prêt à scanner</div>
+<div class="scan">
+  <form id="scan-form">
+    <input type="text" id="code-input" placeholder="Scannez un code-barres ici..." autocomplete="off" autofocus>
+    <input type="number" id="quantite" placeholder="Entrer une quantité" value="1" autocomplete="off" min="1">
+    <button id="submit" type="submit" class="btn">📥 Ajouter</button>
+  </form>
+</div>
 
   <div class="results">
   <h3>📊 Résultats</h3>
@@ -34,7 +28,7 @@
     </div>
   </div>
   <div class="exporter">
-    <button id="export-btn" class="btn" style="">📤 Exporter les résultats</button>
+    <button id="export-btn" class="btn">📤 Exporter les résultats</button>
   </div>
 </div>
 <script src="scripts.js"></script>
