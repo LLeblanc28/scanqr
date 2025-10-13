@@ -8,23 +8,31 @@ const quantiteInput = document.getElementById('quantite');
 const resultsList = document.getElementById('results-list');
 const exportBtn = document.getElementById('export-btn');
 
-// Gestion de la soumission du formulaire
+// Empêche la soumission du formulaire par Enter dans codeInput
+codeInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    // Ne rien faire, l'ajout se fait uniquement par le bouton
+  }
+});
+
+// Gestion de la soumission du formulaire uniquement par le bouton
 form.addEventListener('submit', function(e) {
   e.preventDefault(); // Empêche le rechargement de la page
-  
+
   const code = codeInput.value.trim();
   const quantite = parseInt(quantiteInput.value) || 1;
-  
+
   if (code) {
     // Ajouter le résultat
     addResult(code, quantite);
-    
+
     // Vider l'input du code-barres
     codeInput.value = '';
-    
+
     // Remettre le focus sur l'input
     codeInput.focus();
-    
+
     // Réinitialiser la quantité à 1
     quantiteInput.value = 1;
   }
