@@ -91,11 +91,12 @@ exportBtn.addEventListener('click', function() {
   }
   
   // Créer le contenu CSV
-  let csv = 'Code-Barres,Quantité,Date/Heure\n';
+  let csv = 'Code-Barres;Quantité;Date/Heure\n';
   results.forEach(result => {
-    csv += `${result.code},${result.quantite},${result.timestamp}\n`;
+    // S'assurer que le timestamp contient bien la date ET l'heure
+    csv += `${result.code};${result.quantite};"${result.timestamp}"\n`;
   });
-  
+
   // Créer et télécharger le fichier
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
@@ -106,11 +107,5 @@ exportBtn.addEventListener('click', function() {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-});
-
-// Garder le focus sur l'input du code-barres
-document.addEventListener('click', function (e) {
-  if (e.target.id !== 'quantite' && e.target.id !== 'submit' && e.target.id !== 'export-btn') {
-    codeInput.focus();
-  }
+  URL.revokeObjectURL(url);
 });
