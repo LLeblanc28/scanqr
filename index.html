@@ -167,7 +167,8 @@
       try {
         updateStatus('Initialisation de la caméra...', 'info');
         const devices = await codeReader.listVideoInputDevices();
-        const deviceId = devices[0]?.deviceId;
+        const backCam = devices.find(d => d.label.toLowerCase().includes('back')) || devices[devices.length - 1];
+        const deviceId = backCam?.deviceId;
 
         if (!deviceId) {
           updateStatus('Aucune caméra détectée.', 'error');
