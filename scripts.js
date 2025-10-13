@@ -40,15 +40,17 @@ async function startScanner(){
   try{
     detector = new BarcodeDetector({formats:['ean_13','upc_a']});
     stream = await navigator.mediaDevices.getUserMedia({
-      video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}
+    video:{facingMode:'environment',width:{ideal:720},height:{ideal:480}}
     });
+
     video.srcObject = stream;
     scanning=true;
     startBtn.disabled=true;
     stopBtn.disabled=false;
     updateStatus("Scanner actif - Placez le code dans le cadre",'success');
     scanLoop();
-  }catch(err){
+  }
+  catch (err) {
     console.error(err);
     updateStatus("Erreur d'accès à la caméra",'error');
   }
