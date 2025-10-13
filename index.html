@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scanner de Code-Barres (API native)</title>
+  <title>Scanner de Code-Barres (API native + cooldown)</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -117,7 +117,7 @@
 <body>
   <div class="header">
     <h1>📱 Scanner de Code-Barres</h1>
-    <p>Lecture en temps réel via la caméra (API native)</p>
+    <p>Lecture en temps réel via la caméra (API native + cooldown)</p>
   </div>
 
   <div class="scanner-container">
@@ -154,6 +154,7 @@
     let scanning = false;
     let scanned = new Set();
     let detector = null;
+    let lastScanTime = 0;
 
     function updateStatus(msg, type='info') {
       statusDiv.className = `status ${type}`;
@@ -220,24 +221,33 @@
 
     async function scanLoop() {
       if (!scanning) return;
+      const now = Date.now();
+
       try {
         const barcodes = await detector.detect(video);
         for (const barcode of barcodes) {
-          if (!scanned.has(barcode.rawValue)) {
-            scanned.add(barcode.rawValue);
-            addResult(barcode.rawValue, barcode.format);
+          const code = barcode.rawValue;
+          const format = barcode.format;
+
+          // Cooldown de 2 secondes entre détections
+          if (now - lastScanTime < 2000) continue;
+
+          if (!scanned.has(code)) {
+            scanned.add(code);
+            addResult(code, format);
             playBeep();
-            updateStatus(`Code détecté : ${barcode.rawValue}`, 'success');
+            updateStatus(`Code détecté : ${code}`, 'success');
+            lastScanTime = now;
           }
         }
       } catch (e) { console.warn(e); }
+
       requestAnimationFrame(scanLoop);
     }
 
     startBtn.onclick = startScanner;
     stopBtn.onclick = stopScanner;
     clearBtn.onclick = clearResults;
-
     window.addEventListener('beforeunload', stopScanner);
   </script>
 </body>
