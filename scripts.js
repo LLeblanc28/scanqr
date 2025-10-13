@@ -1,3 +1,5 @@
+// Déclartion des éléments DOM
+
 const video = document.getElementById('video');
 const startBtn = document.getElementById('start-btn');
 const stopBtn = document.getElementById('stop-btn');
@@ -19,19 +21,7 @@ function updateStatus(msg,type='info'){
   statusDiv.textContent = msg;
 }
 
-function playBeep(){
-  const ctx = new (window.AudioContext||window.webkitAudioContext)();
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.connect(gain); 
-  gain.connect(ctx.destination);
-  osc.frequency.value = 900; 
-  osc.type='square';
-  gain.gain.setValueAtTime(0.2,ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.1);
-  osc.start(ctx.currentTime); 
-  osc.stop(ctx.currentTime+0.1);
-}
+// addResult ajoute un code scanné à la liste des résultats
 
 function addResult(code,format){
   const div=document.createElement('div');
@@ -39,6 +29,8 @@ function addResult(code,format){
   div.innerHTML=`<span class="result-code">${code}</span><span class="result-type">${format}</span>`;
   resultsList.prepend(div);
 }
+
+//Lance le scanner
 
 async function startScanner(){
   if(!('BarcodeDetector' in window)){
@@ -62,6 +54,8 @@ async function startScanner(){
   }
 }
 
+// Arrête le scanner
+
 function stopScanner(){
   if(stream) stream.getTracks().forEach(t=>t.stop());
   scanning=false;
@@ -69,6 +63,9 @@ function stopScanner(){
   stopBtn.disabled=true;
   updateStatus("Scanner arrêté",'info');
 }
+
+
+// Permet d'effacer les résultats
 
 function clearResults(){
   scanned.clear();
