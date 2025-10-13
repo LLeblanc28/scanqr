@@ -23,11 +23,14 @@ function playBeep(){
   const ctx = new (window.AudioContext||window.webkitAudioContext)();
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
-  osc.connect(gain); gain.connect(ctx.destination);
-  osc.frequency.value = 900; osc.type='square';
+  osc.connect(gain); 
+  gain.connect(ctx.destination);
+  osc.frequency.value = 900; 
+  osc.type='square';
   gain.gain.setValueAtTime(0.2,ctx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.1);
-  osc.start(ctx.currentTime); osc.stop(ctx.currentTime+0.1);
+  osc.start(ctx.currentTime); 
+  osc.stop(ctx.currentTime+0.1);
 }
 
 function addResult(code,format){
