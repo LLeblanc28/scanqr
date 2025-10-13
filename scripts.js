@@ -8,6 +8,7 @@ const resultsList = document.getElementById('results-list');
 let stream = null;
 let scanning = false;
 let scanned = new Set();
+let barcodeQuantities = {}; // { code: quantity }
 let detector = null;
 
 // Buffer pour lecture stable
@@ -30,10 +31,26 @@ function playBeep(){
   osc.start(ctx.currentTime); osc.stop(ctx.currentTime+0.1);
 }
 
-function addResult(code,format){
-  const div=document.createElement('div');
-  div.className='result-item';
-  div.innerHTML=`<span class="result-code">${code}</span><span class="result-type">${format}</span>`;
+function addResult(code, format) {
+  // Initialiser la quantité à 1 si nouveau
+  if (!barcodeQuantities[code]) {
+    barcodeQuantities[code] = 1;
+  }
+  const div = document.createElement('div');
+  div.className = 'result-item';
+  div.innerHTML = `
+    <span class="result-code">${code}</span>
+    <span class="result-type">${format}</span>
+    <input type="number" min="1" value="${barcodeQuantities[code]}" class="result-qty" style="width:60px; margin-left:10px;" title="Quantité" />
+  `;
+  // Gérer le changement de quantité
+  const qtyInput = div.querySelector('.result-qty');
+  qtyInput.addEventListener('change', (e) => {
+    let val = parseInt(e.target.value, 10);
+    if (isNaN(val) || val < 1) val = 1;
+    barcodeQuantities[code] = val;
+    qtyInput.value = val;
+  });
   resultsList.prepend(div);
 }
 
@@ -67,11 +84,12 @@ function stopScanner(){
   updateStatus("Scanner arrêté",'info');
 }
 
-function clearResults(){
+function clearResults() {
   scanned.clear();
-  detectionBuffer={};
-  resultsList.innerHTML=`<div style="text-align:center; color:#6c757d; font-style:italic;">Aucun code scanné pour le moment</div>`;
-  updateStatus("Résultats effacés",'info');
+  detectionBuffer = {};
+  barcodeQuantities = {};
+  resultsList.innerHTML = `<div style="text-align:center; color:#6c757d; font-style:italic;">Aucun code scanné pour le moment</div>`;
+  updateStatus("Résultats effacés", 'info');
 }
 
 async function scanLoop(){
