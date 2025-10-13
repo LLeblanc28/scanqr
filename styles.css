@@ -1,3 +1,59 @@
+/* ...existing code... */
+
+@media (max-width: 600px) {
+  body {
+    padding: 8px;
+  }
+  .header h1 {
+    font-size: 1.5em;
+  }
+  .scan, .results, .exporter {
+    padding: 12px;
+    max-width: 100%;
+    margin: 0 0 18px 0;
+    box-shadow: none;
+    border-radius: 8px;
+  }
+  #scan-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #scan-form input[type="text"],
+  #scan-form input[type="number"],
+  .btn {
+    font-size: 1em;
+    padding: 12px;
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .results h3 {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+  }
+  #results-list {
+    max-height: 220px;
+    font-size: 0.95em;
+  }
+  .result-item {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+    margin-bottom: 7px;
+    font-size: 1em;
+  }
+  .result-code {
+    font-size: 1em;
+  }
+  .result-quantity {
+    font-size: 1em;
+    margin-top: 4px;
+  }
+  .exporter {
+    margin-bottom: 12px;
+  }
+}
 * {
   margin: 0;
   padding: 0;
