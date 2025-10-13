@@ -1,3 +1,9 @@
+/* Ajout pour le conteneur principal */
+.main-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
 /* ...existing code... */
 
 @media (max-width: 600px) {
@@ -35,6 +41,8 @@
   #results-list {
     max-height: 220px;
     font-size: 0.95em;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .result-item {
     flex-direction: column;

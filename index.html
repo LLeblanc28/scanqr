@@ -8,21 +8,22 @@
 
 </head>
 <body>
-<div class="header">
-  <h1>📱 Scanner de Code-Barres</h1>
-  <p>Nécéssite une douchette USB ou bluetooth</p>
-</div>
+<div class="main-container">
+  <div class="header">
+    <h1>📱 Scanner de Code-Barres</h1>
+    <p>Nécéssite une douchette USB ou bluetooth</p>
+  </div>
 
-<div class="scan">
-  <form id="scan-form">
-    <input type="text" id="code-input" placeholder="Scannez un code-barres ici..." autocomplete="on" autofocus>
-    <input type="number" id="quantite" placeholder="Entrer une quantité" value="1" autocomplete="off" min="1">
-    <button id="submit" type="submit" class="btn">📥 Ajouter</button>
-  </form>
-</div>
+  <div class="scan">
+    <form id="scan-form">
+      <input type="text" id="code-input" placeholder="Scannez un code-barres ici..." autocomplete="off" autofocus>
+      <input type="number" id="quantite" placeholder="Entrer une quantité" value="1" autocomplete="off" min="1">
+      <button id="submit" type="submit" class="btn">📥 Ajouter</button>
+    </form>
+  </div>
 
   <div class="results">
-  <h3>📊 Résultats</h3>
+    <h3>📊 Résultats</h3>
     <div id="results-list">
       <div style="text-align:center; color:#6c757d; font-style:italic;">Aucun code scanné pour le moment</div>
     </div>
