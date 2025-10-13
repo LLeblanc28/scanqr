@@ -40,7 +40,7 @@ async function startScanner(){
   try{
     detector = new BarcodeDetector({formats:['ean_13','upc_a']});
     stream = await navigator.mediaDevices.getUserMedia({
-    video:{facingMode:'environment',width:{ideal:1},height:{ideal:1}}
+    video:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080}}
     });
 
     video.srcObject = stream;
