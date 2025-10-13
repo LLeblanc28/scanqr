@@ -104,3 +104,4 @@ startBtn.onclick=startScanner;
 stopBtn.onclick=stopScanner;
 clearBtn.onclick=clearResults;
 window.addEventListener('beforeunload',stopScanner);
+

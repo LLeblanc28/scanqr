@@ -1,4 +1,4 @@
-/**Correspond à toutes les balise**/
+  /**Correspond à toutes les balise**/
 
 * { 
   margin: 0; 
@@ -6,7 +6,7 @@
   box-sizing: border-box; 
 }
 
-/**Styles de base**/
+  /**Styles de base**/
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -46,7 +46,7 @@ body {
   margin-bottom: 20px;
   flex-wrap: wrap;
 }
- /**Bouton stylisé**/
+  /**Bouton stylisé**/
 .btn {
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
@@ -71,7 +71,7 @@ body {
   transform: none;
 }
 
-/**Scanner et vidéo**/
+  /**Scanner et vidéo**/
 
 #scanner {
   position: relative;
@@ -97,7 +97,7 @@ video {
 }
 
 
-/**Overlay de détection**/
+  /**Overlay de détection**/
 
 .overlay {
   position: absolute;
@@ -137,7 +137,7 @@ video {
   border:1px solid #bee5eb; 
 }
 
-/**Résultats**/
+  /**Résultats**/
 
 .results { 
   background:#f8f9fa; 
