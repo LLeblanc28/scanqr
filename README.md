@@ -24,7 +24,7 @@ Bienvenue dans le projet **ScanQR**. Cette application permet de scanner des cod
 
 - Ouvrez l'application.
 - Autorisez l'accès à la caméra.
-- Scannez un QR code pour afficher son contenu.
+- Scannez un code-barre pour afficher son contenu.
 
 ## Contribution
 
