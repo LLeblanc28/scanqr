@@ -1,3 +1,5 @@
+// déclaration des dépendances
+
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
@@ -6,12 +8,16 @@ const app = express();
 app.use(express.json());
 app.use(cors()); // Autorise les requêtes du navigateur
 
+// Configuration de la connexion à la base de données
+
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
+    host: 'localhost', // Remplace par l'hôte de ta base
+    user: 'root', // Remplace par ton utilisateur
+    password: '', // Remplace par ton mot de passe
     database: 'ADM_Cbarre' // Remplace par le nom de ta base
 });
+
+// Connexion à la base de données
 
 connection.connect((err) => {
     if (err) {
@@ -20,6 +26,8 @@ connection.connect((err) => {
     }
     console.log('Connecté à la base de données MySQL.');
 });
+
+// Route pour ajouter ou mettre à jour un code-barres
 
 app.post('/add-barcode', async (req, res) => {
     const { IdBarre, QTE, date } = req.body;
@@ -57,23 +65,6 @@ app.post('/add-barcode', async (req, res) => {
         console.error('Erreur SQL:', err);
         res.status(500).json({ error: 'Erreur serveur' });
     }
-});
-
-
-app.get('/delete-barcode/:id', (req, res) => {
-    const IdBarre = req.params.id;
-    const deleteSql = 'DELETE FROM cbarre WHERE IdBarre = ?';
-    connection.query(deleteSql, [IdBarre], (err, results) => {
-        if (err) {
-            console.error('Erreur SQL DELETE:', err);
-            return res.status(500).json({ error: 'Erreur SQL DELETE' });
-        }
-        if (results.affectedRows === 0) {
-            return res.status(404).json({ error: 'Code-barres non trouvé' });
-        }
-        res.json({ status: 'success', message: 'Code-barres supprimé' });
-    }
-    );
 });
 
 // Route pour récupérer tous les codes-barres
