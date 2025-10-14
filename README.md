@@ -12,13 +12,13 @@ Bienvenue dans le projet **ScanQR**. Cette application permet de scanner des cod
 ## Installation
 
 1. Clonez le dépôt :
-    ```bash
+    ``bash
     git clone https://github.com/votre-utilisateur/scanqr.git
-    ```
+    ``
 2. Lancer le serveur web :
-    ```bash
+    ``bash
     127.0.0.1:8080
-    ```
+    ``
 
 ## Utilisation
 
@@ -32,8 +32,4 @@ Les contributions sont les bienvenues ! Veuillez ouvrir une issue ou soumettre u
 
 ## Licence
 
-Ce projet est sous licence MIT.
-
-## Auteur
-
-Développé par poste22.
+Ce projet est sous licence Libre.
