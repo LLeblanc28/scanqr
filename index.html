@@ -10,22 +10,23 @@
 <div class="main-container">
   <div class="header">
     <h1>📱 Scanner de Code-Barres</h1>
-    <p>Nécéssite une douchette USB ou bluetooth</p>
+    <p>Nécéssite un scanner USB ou bluetooth</p>
   </div>
 
   <div class="scan">
     <form id="scan-form">
       <input type="text" id="code-input" placeholder="Scannez un code-barres ici..." autocomplete="off" autofocus>
-      <h3>Ajouter une quantité</h3>
-      <input type="number" id="quantite" placeholder="Entrer une quantité" value="1" autocomplete="off" min="1">
-      <button id="submit" type="submit" class="btn">📥 Ajouter</button>
+      <h3>Ajouter une quantité.Pour retirer 1, quantité à -1</h3>
+      <input type="number" id="quantite" placeholder="Entrer une quantité" value="1" autocomplete="off" min="-1">
+      <button id="submit" type="submit" class="btn">📥 Confirmer</button>
     </form>
   </div>
 
   <div class="results">
+    <h3>📊 Résultats</h3>
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h3>📊 Résultats</h3>
-      <button id="refresh-btn" class="btn" style="padding: 5px 10px; font-size: 0.9em;">🔄 Actualiser</button>
+      <button id="refresh-btn" class="btn" style="padding: 5px 10px; font-size: 0.9em; margin-bottom: 30px;">🔄 Actualiser</button>
+
     </div>
     <div id="results-list">
       <div style="text-align:center; color:#6c757d; font-style:italic;">Aucun code scanné pour le moment</div>

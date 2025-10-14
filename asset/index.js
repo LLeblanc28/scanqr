@@ -130,7 +130,7 @@ function displayResults() {
   resultsList.innerHTML = '';
   
   // Afficher dans l'ordre inverse (plus récent en premier)
-  [...results].reverse().forEach((result) => {
+  [...results].forEach((result) => {
     const div = document.createElement('div');
     div.className = 'result-item';
     div.innerHTML = `
@@ -138,7 +138,7 @@ function displayResults() {
         <div class="result-code">${result.code}</div>
         <div style="font-size:0.9em; color:#6c757d;">${result.timestamp}</div>
       </div>
-      <div class="result-quantity">Qté: ${result.quantite}</div>
+      <div class="result-quantity">Quantité : ${result.quantite}</div>
     `;
     resultsList.appendChild(div);
   });
