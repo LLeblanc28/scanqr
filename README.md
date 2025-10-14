@@ -1,3 +1,10 @@
+[![made-with-javascript](https://img.shields.io/badge/Made%20with-JavaScript-1f425f.svg)](https://www.javascript.com)
+[![Npm package version](https://badgen.net/npm/v/express)](https://npmjs.com/package/express)
+[![Latest release](https://badgen.net/github/release/Naereen/Strapdown.js)](https://github.com/Naereen/Strapdown.js/releases)
+[![Visual Studio](https://badgen.net/badge/icon/visualstudio?icon=visualstudio&label)](https://visualstudio.microsoft.com)
+
+
+
 # ScanQR
 
 Bienvenue dans le projet **ScanQR**. Cette application permet de scanner des codes QR facilement et rapidement.
@@ -37,8 +44,8 @@ Bienvenue dans le projet **ScanQR**. Cette application permet de scanner des cod
 ## Utilisation
 
 - Ouvrez l'application.
-- Autorisez l'accès à la caméra.
-- Scannez un code-barre pour afficher son contenu.
+- Brancher un lecteur de code-barres.
+- Scannez un code-barre et rentrer la quantité.
 
 ## Contribution
 
