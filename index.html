@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="styles.css">
 <title>Lecteur de Code-Barres</title>
-
 </head>
 <body>
 <div class="main-container">
@@ -17,7 +16,10 @@
   <div class="scan">
     <form id="scan-form">
       <input type="text" id="code-input" placeholder="Scannez un code-barres ici..." autocomplete="off" autofocus>
+      <h3>Ajouter une quantité</h3>
       <input type="number" id="quantite" placeholder="Entrer une quantité" value="1" autocomplete="off" min="1">
+      <h3>Supprimer une quantité</h3>
+      <input type="number" id="delete" placeholder="Supprimer une quantité" value="0" autocomplete="off" min="0">
       <button id="submit" type="submit" class="btn">📥 Ajouter</button>
     </form>
   </div>

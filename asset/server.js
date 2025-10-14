@@ -59,6 +59,23 @@ app.post('/add-barcode', async (req, res) => {
     }
 });
 
+
+app.get('/delete-barcode/:id', (req, res) => {
+    const IdBarre = req.params.id;
+    const deleteSql = 'DELETE FROM cbarre WHERE IdBarre = ?';
+    connection.query(deleteSql, [IdBarre], (err, results) => {
+        if (err) {
+            console.error('Erreur SQL DELETE:', err);
+            return res.status(500).json({ error: 'Erreur SQL DELETE' });
+        }
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ error: 'Code-barres non trouvé' });
+        }
+        res.json({ status: 'success', message: 'Code-barres supprimé' });
+    }
+    );
+});
+
 // Route pour récupérer tous les codes-barres
 app.get('/get-barcodes', (req, res) => {
     const selectSql = 'SELECT IdBarre, QTE, date FROM cbarre ORDER BY date DESC';
