@@ -5,6 +5,7 @@ let results = [];
 const form = document.getElementById('scan-form');
 const codeInput = document.getElementById('code-input');
 const quantiteInput = document.getElementById('quantite');
+const deleteInput = document.getElementById('delete');
 const resultsList = document.getElementById('results-list');
 const exportBtn = document.getElementById('export-btn');
 
