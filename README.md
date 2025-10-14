@@ -1,4 +1,4 @@
-[![codecov](https://cdn.prod.website-files.com/5e0f1144930a8bc8aace526c/65dd9eb5aaca434fac4f1c31_Coverage-80%2525-yellow.svg)]()
+[![codecov](https://cdn.prod.website-files.com/5e0f1144930a8bc8aace526c/65dd9eb5aaca434fac4f1c31_Coverage-88%2525-yellow.svg)]()
 
 
 # ScanQR
