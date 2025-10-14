@@ -15,9 +15,20 @@ Bienvenue dans le projet **ScanQR**. Cette application permet de scanner des cod
     ``bash
     git clone https://github.com/votre-utilisateur/scanqr.git
     ``
-2. Lancer le serveur web :
+
+2. Installer NodeJS :
+    ``bash
+    [text](https://nodejs.org/fr/download)
+    npm install
+    ``
+
+3. Lancer le serveur web :
     ``bash
     127.0.0.1:8080
+    ``
+4. Lancer le serveur node.js pour l'API :
+    ``bash
+    npm run
     ``
 
 ## Utilisation
