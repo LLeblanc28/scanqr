@@ -19,6 +19,8 @@ Bienvenue dans le projet **ScanQR**. Cette application permet de scanner des cod
 2. Installer NodeJS :
     ``bash
     [text](https://nodejs.org/fr/download)
+    ``
+    ``bash
     npm install
     ``
 
