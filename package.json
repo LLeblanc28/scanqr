@@ -1,7 +1,7 @@
 {
   "name": "scanqr",
   "version": "1.0.0",
-  "description": "Bienvenue dans le projet **ScanQR**. Cette application permet de scanner des codes QR facilement et rapidement.",
+  "description": "Bienvenue dans le projet **ScanQR**. Cette application permet de scanner des codes barre facilement et rapidement.",
   "main": "index.js",
   "scripts": {
   "start": "node asset/server.js"
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/LLeblanc28/scanqr.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Léo Leblanc",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/LLeblanc28/scanqr/issues"
