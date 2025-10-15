@@ -17,7 +17,7 @@
     <form id="scan-form">
       <input type="text" id="code-input" placeholder="Scannez un code-barres ici..." autocomplete="off" autofocus>
       <h3>Ajouter une quantité.Pour retirer 1, quantité à -1</h3>
-      <input type="number" id="quantite" placeholder="Entrer une quantité" value="1" autocomplete="off" min="-1">
+      <input type="number" id="quantite" placeholder="Entrer une quantité" value="1" autocomplete="off" min="-10">
       <button id="submit" type="submit" class="btn">📥 Confirmer</button>
     </form>
   </div>
@@ -33,7 +33,7 @@
     </div>
   </div>
 </div>
-  <button hidden id="export-btn">Exporter</button>
+  <button hidden id="export-btn" class="btn">Exporter</button>
 <script src="./asset/index.js"></script>
 </body>
 </html>
