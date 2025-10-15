@@ -52,16 +52,6 @@
     margin-bottom: 7px;
     font-size: 1em;
   }
-  .result-code {
-    font-size: 1em;
-  }
-  .result-quantity {
-    font-size: 1em;
-    margin-top: 4px;
-  }
-  .exporter {
-    margin-bottom: 12px;
-  }
 }
 * {
   margin: 0;

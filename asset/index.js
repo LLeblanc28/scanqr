@@ -138,7 +138,7 @@ function displayResults() {
         <div class="result-code">${result.code}</div>
         <div style="font-size:0.9em; color:#6c757d;">${result.timestamp}</div>
       </div>
-      <div class="result-quantity">Quantité : ${result.quantite}</div>
+      <div class="result-quantity">Quantité: ${result.quantite}</div>
     `;
     resultsList.appendChild(div);
   });
