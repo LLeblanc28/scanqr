@@ -19,27 +19,27 @@ Bienvenue dans le projet **ScanQR**. Cette application permet de scanner des cod
 ## Installation
 
 1. Clonez le dépôt :
-    ``bash
+    ```bash
     git clone https://github.com/votre-utilisateur/scanqr.git
-    ``
+    ```
 
 2. Installer NodeJS :
-    ``bash
+    ```bash
     https://nodejs.org/fr/download
-    ``
-    <br>
-    ``bash
+    ```
+<br>
+    ```bash
     npm install
-    ``
+    ```
 
 3. Lancer le serveur web :
-    ``bash
+    ```bash
     127.0.0.1:8080
-    ``
+    ```
 4. Lancer le serveur node.js pour l'API :
-    ``bash
+    ```bash
     npm run
-    ``
+    ```
 
 ## Utilisation
 
