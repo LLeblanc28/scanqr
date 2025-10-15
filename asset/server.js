@@ -79,6 +79,18 @@ app.get('/get-barcodes', (req, res) => {
     });
 });
 
+app.get('/get-count', (req, res) => {
+    const countSql = 'SELECT COUNT(*) AS count FROM cbarre';
+    connection.query(countSql, (err, results) => {
+        if (err) {
+            console.error('Erreur SQL COUNT:', err);
+            return res.status(500).json({ error: 'Erreur lors de la récupération du nombre d\'entrées' });
+        }
+        res.json({ count: results[0].count });
+    }
+    );
+});
+
 app.listen(3000, () => {
     console.log('Serveur API démarré sur le port 3000');
 });

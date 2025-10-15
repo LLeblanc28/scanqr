@@ -45,6 +45,8 @@ codeInput.addEventListener('keydown', function(e) {
   }
 });
 
+
+
 // Gestion de la soumission du formulaire uniquement par le bouton
 form.addEventListener('submit', function(e) {
   e.preventDefault();
