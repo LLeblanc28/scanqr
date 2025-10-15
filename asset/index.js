@@ -62,6 +62,8 @@ form.addEventListener('submit', function(e) {
 
 // Fonction pour ajouter un résultat
 function addResult(code, quantite) {
+  // Vérification de la quantité
+  
   const timestamp = new Date().toLocaleString('fr-FR');
 
   // Vérifier si le code existe déjà dans le tableau local
@@ -71,6 +73,7 @@ function addResult(code, quantite) {
     // Ajouter à la quantité existante
     results[existingIndex].quantite += quantite;
     results[existingIndex].timestamp = timestamp;
+  
     
     // Envoyer seulement la quantité ajoutée
     sendToDatabase({
@@ -92,6 +95,20 @@ function addResult(code, quantite) {
   displayResults();
 }
 
+
+
+function playbeep() {
+  const contexte = new AudioContext();
+  const osc = contexte.createOscillator();
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(1000, contexte.currentTime); // Fréquence en Hz
+  osc.connect(contexte.destination);
+  osc.start();
+  osc.stop(contexte.currentTime + 0.1); // Durée du beep en secondes
+}
+
+
+
 // Fonction pour envoyer les données à l'API Node.js
 function sendToDatabase(result) {
   fetch('http://localhost:3000/add-barcode', {
@@ -104,13 +121,14 @@ function sendToDatabase(result) {
     })
   })
   .then(res => {
-    if (!res.ok) {
+    if (!res.ok ) {
       throw new Error(`Erreur HTTP: ${res.status}`);
     }
     return res.json();
   })
   .then(data => {
     console.log('Réponse serveur:', data);
+    alert('Élément ajouté/supprimé avec succès');
     // Recharger les données pour être sûr d'avoir les bonnes quantités
     loadDataFromDatabase();
   })
