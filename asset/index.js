@@ -130,7 +130,7 @@ function sendToDatabase(result) {
   })
   .then(data => {
     console.log('Réponse serveur:', data);
-    alert('Élément ajouté/supprimé avec succès');
+    alert('Élément ajouté/retiré avec succès');
     // Recharger les données pour être sûr d'avoir les bonnes quantités
     loadDataFromDatabase();
   })

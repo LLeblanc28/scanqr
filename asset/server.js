@@ -67,6 +67,10 @@ app.post('/add-barcode', async (req, res) => {
     }
 });
 
+app.post('/remove-barcode', async (req, res) => {
+    const { IdBarre, QTE, date } = req.body;
+    if (!IdBarre || QTE <= 0 || !date) {
+
 // Route pour récupérer tous les codes-barres
 app.get('/get-barcodes', (req, res) => {
     const selectSql = 'SELECT IdBarre, QTE, date FROM cbarre ORDER BY date DESC';
