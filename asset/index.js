@@ -2,53 +2,51 @@
 let results = [];
 
 // Références aux éléments
-const form = document.getElementById('scan-form');
-const codeInput = document.getElementById('code-input');
-const quantiteInput = document.getElementById('quantite');
-const deleteInput = document.getElementById('delete');
-const resultsList = document.getElementById('results-list');
-const exportBtn = document.getElementById('export-btn');
+const form = document.getElementById("scan-form");
+const codeInput = document.getElementById("code-input");
+const quantiteInput = document.getElementById("quantite");
+const deleteInput = document.getElementById("delete");
+const resultsList = document.getElementById("results-list");
+const exportBtn = document.getElementById("export-btn");
 
 // Charger les données au démarrage
-window.addEventListener('DOMContentLoaded', function() {
+window.addEventListener("DOMContentLoaded", function () {
   loadDataFromDatabase();
 });
 
 // Fonction pour charger les données depuis la base de données
 function loadDataFromDatabase() {
-  fetch('http://localhost:3000/get-barcodes')
-    .then(res => {
+  fetch("http://localhost:3000/get-barcodes")
+    .then((res) => {
       if (!res.ok) {
         throw new Error(`Erreur HTTP: ${res.status}`);
       }
       return res.json();
     })
-    .then(data => {
+    .then((data) => {
       // Convertir les données de la base en format local
-      results = data.map(item => ({
+      results = data.map((item) => ({
         code: item.IdBarre,
         quantite: item.QTE,
-        timestamp: item.date
+        timestamp: item.date,
       }));
       displayResults();
     })
-    .catch(err => {
-      console.error('Erreur lors du chargement des données:', err);
+    .catch((err) => {
+      console.error("Erreur lors du chargement des données:", err);
       displayResults(); // Afficher quand même l'interface vide
     });
 }
 
 // Empêche la soumission du formulaire par Enter dans codeInput
-codeInput.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
+codeInput.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
     e.preventDefault();
   }
 });
 
-
-
 // Gestion de la soumission du formulaire uniquement par le bouton
-form.addEventListener('submit', function(e) {
+form.addEventListener("submit", function (e) {
   e.preventDefault();
 
   const code = codeInput.value.trim();
@@ -56,7 +54,7 @@ form.addEventListener('submit', function(e) {
 
   if (code) {
     addResult(code, quantite);
-    codeInput.value = '';
+    codeInput.value = "";
     codeInput.focus();
     quantiteInput.value = 1;
   }
@@ -64,31 +62,42 @@ form.addEventListener('submit', function(e) {
 
 // Fonction pour ajouter un résultat
 function addResult(code, quantite) {
-  // Vérification de la quantité
-  
-  const timestamp = new Date().toLocaleString('fr-FR');
-
-  // Vérifier si le code existe déjà dans le tableau local
-  const existingIndex = results.findIndex(r => r.code === code);
+  const timestamp = new Date().toLocaleString("fr-FR");
+  const existingIndex = results.findIndex((r) => r.code === code);
 
   if (existingIndex >= 0) {
-    // Ajouter à la quantité existante
-    results[existingIndex].quantite += quantite;
-    results[existingIndex].timestamp = timestamp;
-  
-    
-    // Envoyer seulement la quantité ajoutée
-    sendToDatabase({
-      code: code,
-      quantite: quantite,
-      timestamp: timestamp
-    });
+    // Vérifier si la quantité deviendrait négative
+    const newQuantite = results[existingIndex].quantite + quantite;
+    if (newQuantite < 0) {
+      alert("Plus de stock disponible");
+      // Calculer la quantité à envoyer pour atteindre 0
+      const adjustedQuantite = -results[existingIndex].quantite;
+      results[existingIndex].quantite = 0;
+      results[existingIndex].timestamp = timestamp;
+
+      // Envoyer la quantité ajustée
+      sendToDatabase({
+        code: code,
+        quantite: adjustedQuantite,
+        timestamp: timestamp,
+      });
+    } else {
+      results[existingIndex].quantite = newQuantite;
+      results[existingIndex].timestamp = timestamp;
+
+      // Envoyer la quantité normale
+      sendToDatabase({
+        code: code,
+        quantite: quantite,
+        timestamp: timestamp,
+      });
+    }
   } else {
     // Ajouter un nouveau résultat
     const resultObj = {
       code: code,
       quantite: quantite,
-      timestamp: timestamp
+      timestamp: timestamp,
     };
     results.push(resultObj);
     sendToDatabase(resultObj);
@@ -97,62 +106,59 @@ function addResult(code, quantite) {
   displayResults();
 }
 
-
-
 function playbeep() {
   const contexte = new AudioContext();
   const osc = contexte.createOscillator();
-  osc.type = 'square';
+  osc.type = "square";
   osc.frequency.setValueAtTime(1000, contexte.currentTime); // Fréquence en Hz
   osc.connect(contexte.destination);
   osc.start();
   osc.stop(contexte.currentTime + 0.1); // Durée du beep en secondes
 }
 
-
-
 // Fonction pour envoyer les données à l'API Node.js
 function sendToDatabase(result) {
-  fetch('http://localhost:3000/add-barcode', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+  fetch("http://localhost:3000/add-barcode", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       IdBarre: result.code,
       QTE: result.quantite,
-      date: result.timestamp
+      date: result.timestamp,
+    }),
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`Erreur HTTP: ${res.status}`);
+      }
+      return res.json();
     })
-  })
-  .then(res => {
-    if (!res.ok ) {
-      throw new Error(`Erreur HTTP: ${res.status}`);
-    }
-    return res.json();
-  })
-  .then(data => {
-    console.log('Réponse serveur:', data);
-    alert('Élément ajouté/retiré avec succès');
-    // Recharger les données pour être sûr d'avoir les bonnes quantités
-    loadDataFromDatabase();
-  })
-  .catch(err => {
-    console.error('Erreur API:', err);
-    alert('Erreur lors de l\'envoi à la base de données');
-  });
+    .then((data) => {
+      console.log("Réponse serveur:", data);
+      alert("Élément ajouté/retiré avec succès");
+      // Recharger les données pour être sûr d'avoir les bonnes quantités
+      loadDataFromDatabase();
+    })
+    .catch((err) => {
+      console.error("Erreur API:", err);
+      alert("Erreur lors de l'envoi à la base de données");
+    });
 }
 
 // Fonction pour afficher les résultats
 function displayResults() {
   if (results.length === 0) {
-    resultsList.innerHTML = '<div style="text-align:center; color:#6c757d; font-style:italic;">Aucun code scanné pour le moment</div>';
+    resultsList.innerHTML =
+      '<div style="text-align:center; color:#6c757d; font-style:italic;">Aucun code scanné pour le moment</div>';
     return;
   }
-  
-  resultsList.innerHTML = '';
-  
+
+  resultsList.innerHTML = "";
+
   // Afficher dans l'ordre inverse (plus récent en premier)
   [...results].forEach((result) => {
-    const div = document.createElement('div');
-    div.className = 'result-item';
+    const div = document.createElement("div");
+    div.className = "result-item";
     div.innerHTML = `
       <div>
         <div class="result-code">${result.code}</div>
@@ -165,25 +171,25 @@ function displayResults() {
 }
 
 // Fonction d'exportation
-exportBtn.addEventListener('click', function() {
+exportBtn.addEventListener("click", function () {
   if (results.length === 0) {
-    alert('Aucun résultat à exporter');
+    alert("Aucun résultat à exporter");
     return;
   }
-  
+
   // Créer le contenu CSV
-  let csv = 'Code-Barres;Quantité;Date/Heure\n';
-  results.forEach(result => {
+  let csv = "Code-Barres;Quantité;Date/Heure\n";
+  results.forEach((result) => {
     csv += `${result.code};${result.quantite};"${result.timestamp}"\n`;
   });
 
   // Créer et télécharger le fichier
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
   const url = URL.createObjectURL(blob);
-  link.setAttribute('href', url);
-  link.setAttribute('download', `scan_${new Date().getTime()}.csv`);
-  link.style.visibility = 'hidden';
+  link.setAttribute("href", url);
+  link.setAttribute("download", `scan_${new Date().getTime()}.csv`);
+  link.style.visibility = "hidden";
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
